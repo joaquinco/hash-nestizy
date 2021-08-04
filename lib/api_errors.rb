@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'byebug'
+
 module ApiErrors
   # module_eval do
   # end
@@ -23,33 +25,36 @@ module ApiErrors
   #   }
   #
   def to_nested(hash_value)
-    ret = {}
-    hash_value.map do |key, value|
+    hash_value.each_with_object({}) do |(key, value), ac|
       key_parts = key.split('.')
 
-      current = ret
-      child = ret
+      current = ac
+      current_parent = ac
       last_key = key
+
       key_parts.each do |key_part|
-        current = child
-        if key_part.include?('[')
-          key_part_list = key_part.split('[')
-          key_part = key_part_list[0]
-          index = key_part_list[-1].to_i
-          list = get_or_add_child(child, key_part, default: [])
-          current[key_part] = list
-          child = get_or_add_child(list, index, default: {})
-        else
-          child = get_or_add_child(child, key_part)
-          current[key_part] = child
-        end
-        last_key = key_part
+        current_parent = current
+        current, last_key = nested_insert(current, key_part)
       end
 
-      current[last_key] = value
+      current_parent[last_key] = value
+    end
+  end
+
+  def nested_insert(current, key)
+    if key.include?('[')
+      key_part_list = key.split('[')
+      key = key_part_list[0]
+      index = key_part_list[-1].to_i
+      list = get_or_add_child(current, key, default: [])
+      current[key] = list
+      current = get_or_add_child(list, index)
+    else
+      current[key] = get_or_add_child(current, key)
+      current = current[key]
     end
 
-    ret
+    [current, key]
   end
 
   private
@@ -60,5 +65,6 @@ module ApiErrors
   end
 
   module_function(:to_nested)
+  module_function(:nested_insert)
   module_function(:get_or_add_child)
 end
