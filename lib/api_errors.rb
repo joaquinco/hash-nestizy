@@ -4,11 +4,27 @@ module ApiErrors
   # module_eval do
   # end
 
-  ##
-  # Transform a rails errors hash into nested hash of errors.
-  def to_nested(error_hash)
+  # Transform a flat hash into nested hash.
+  # Handy to use rails' ActiveRecord::Error in api mode.
+  #
+  # @param [Hash] hash_value The hash to be transformed.
+  #
+  # ==== Example
+  #
+  #   errors = {
+  #     'name' => 'is required',
+  #     'role.name' => 'max be longer than 5',
+  #     'role.index' => 'alredy exists',
+  #   }
+  #   error_nested = to_nested(errors)
+  #   error_nested == {
+  #     'name' => 'is required',
+  #     'role' => { 'name' => 'max be longer than 5', 'index' => 'alredy exists' },
+  #   }
+  #
+  def to_nested(hash_value)
     ret = {}
-    error_hash.map do |key, value|
+    hash_value.map do |key, value|
       key_parts = key.split('.')
 
       current = ret

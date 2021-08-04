@@ -3,70 +3,51 @@
 require 'api_errors'
 
 RSpec.describe ApiErrors do
-  simple_hash = {
-    'key_1' => 1,
-    'key_string' => 'value is required',
-    'key_array' => %w[value2 value3],
-    'key_hash' => { 'value' => 'is required', 'value2' => 'is not' }
-  }
-  let(:nested_attribute_name) { 'nested_attribute' }
-
-  describe 'single nested level' do
-    let(:error_single_nested) do
-      nested_entries = simple_hash.transform_keys { |key| "#{nested_attribute_name}.#{key}" }
-
-      simple_hash.merge(nested_entries)
+  describe 'single entry nested' do
+    let(:initial_hash) do
+      {
+        'name' => 'is required',
+        'role.name' => 'max be longer than 5',
+        'role.index' => 'alredy exists'
+      }
+    end
+    let(:expected_hash) do
+      {
+        'name' => 'is required',
+        'role' => { 'name' => 'max be longer than 5', 'index' => 'alredy exists' }
+      }
     end
 
-    let(:error_nested) { ApiErrors.to_nested(error_single_nested) }
+    let(:received_hash) { ApiErrors.to_nested(initial_hash) }
 
-    it 'returns a new hash' do
-      expect(error_nested).to be_a(Hash)
-    end
-
-    it 'has a nested entry' do
-      expect(error_nested).to include(nested_attribute_name)
-    end
-
-    it 'neste entry is a Hash' do
-      expect(error_nested[nested_attribute_name]).to be_a(Hash)
-    end
-
-    it 'nested hash is simple hash' do
-      expect(error_nested[nested_attribute_name]).to eq(simple_hash)
+    it 'returns what\'s expected' do
+      expect(received_hash).to eq(expected_hash)
     end
   end
 
-  describe 'two nested levels' do
-    let(:nested_entries_count) { 10 }
-    let(:error_multiple_nested) do
-      nested_entries = (0..nested_entries_count - 1).reduce({}) do |ac, index|
-        single_nested_hash = simple_hash.transform_keys do |key|
-          "#{nested_attribute_name}[#{index}].#{key}"
-        end
-
-        ac.merge(single_nested_hash)
-      end
-
-      simple_hash.merge(nested_entries)
+  describe 'multiple entry nested' do
+    let(:initial_hash) do
+      {
+        'name' => 'is required',
+        'role[1].name' => 'max be longer than 5',
+        'role[1].index' => 'alredy exists',
+        'role[2].name' => 'max be longer than 5'
+      }
     end
-
-    let(:error_nested) { ApiErrors.to_nested(error_multiple_nested) }
-
-    it 'returns a new hash' do
-      expect(error_nested).to be_a(Hash)
+    let(:expected_hash) do
+      {
+        'name' => 'is required',
+        'role' => [
+          nil,
+          { 'name' => 'max be longer than 5', 'index' => 'alredy exists' },
+          { 'name' => 'max be longer than 5' }
+        ]
+      }
     end
+    let(:received_hash) { ApiErrors.to_nested(initial_hash) }
 
-    it 'has a nested entry' do
-      expect(error_nested).to include(nested_attribute_name)
-    end
-
-    it 'neste entry is an Array' do
-      expect(error_nested[nested_attribute_name]).to be_a(Array)
-    end
-
-    it 'each nested hash is simple hash' do
-      expect(error_nested[nested_attribute_name]).to eq([simple_hash] * nested_entries_count)
+    it 'returns what\'s expected' do
+      expect(received_hash).to eq(expected_hash)
     end
   end
 
