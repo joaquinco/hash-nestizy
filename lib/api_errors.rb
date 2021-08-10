@@ -2,10 +2,9 @@
 
 require 'byebug'
 
-module ApiErrors
-  # module_eval do
-  # end
-
+module ApiErrors # :nodoc:
+  # = Converts hash keys to nested hash
+  #
   # Transform a flat hash into nested hash.
   # Handy to use rails' ActiveRecord::Error in api mode.
   #
@@ -24,9 +23,9 @@ module ApiErrors
   #     'role' => { 'name' => 'max be longer than 5', 'index' => 'alredy exists' },
   #   }
   #
-  def to_nested(hash_value)
+  def to_nested(hash_value, nesting_char: '.')
     hash_value.each_with_object({}) do |(key, value), ac|
-      key_parts = key.split('.')
+      key_parts = key.split(nesting_char)
 
       current = ac
       current_parent = ac
@@ -40,6 +39,8 @@ module ApiErrors
       current_parent[last_key] = value
     end
   end
+
+  private
 
   def nested_insert(current, key)
     if key.include?('[')
@@ -56,8 +57,6 @@ module ApiErrors
 
     [current, key]
   end
-
-  private
 
   def get_or_add_child(curr_child, key, default: {})
     curr_child[key] = default unless curr_child[key]
