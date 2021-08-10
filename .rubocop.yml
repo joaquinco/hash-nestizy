@@ -1,6 +1,13 @@
+require:
+  - rubocop-rspec
+
 AllCops:
   NewCops: enable
 
 Metrics/MethodLength:
   Max: 15
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
 
