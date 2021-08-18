@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'hash_nestizy'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.summary     = "Convert a single level hash into multilevel by splitting keys on some character"
   s.authors     = ["Joaquin Correa"]
   s.email       = 'joaquin.correa@xmartlabs.com'
