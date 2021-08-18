@@ -11,5 +11,5 @@ Gem::Specification.new do |s|
   ]
   s.homepage    = 'https://rubygems.org/gems/hash_nestizy'
   s.license     = 'MIT'
-  s.metadata    = { 'source_code_uri' => "https://github.com/xmartlabs/hash-nestizy" }
+  s.metadata    = { 'source_code_uri' => "https://github.com/joaquinco/hash-nestizy" }
 end
