@@ -7,7 +7,7 @@ module HashNestizy # :nodoc:
   # = Converts hash keys to nested hash
   #
   # Transform a flat hash into nested hash.
-  # Handy to use rails' ActiveRecord::Error in api mode.
+  # Handy to use rails' ActiveModel::Error in api mode.
   #
   # @param [Hash] hash_value The hash to be transformed.
   #

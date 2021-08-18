@@ -1,7 +1,7 @@
 Hash Nestizy
 ============
 
-Convert a flat hash representation to a nested one. Specifically useful to return easlily to handle rails `ActiveRecord::Error` in API mode.
+Convert a flat hash representation to a nested one. Specifically useful to return easlily to handle rails `ActiveModel::Error` in API mode.
 
 ## Examples
 
@@ -10,7 +10,7 @@ Convert a flat hash representation to a nested one. Specifically useful to retur
 => true
 >>> errors = { 'name' => 'is required', 'role.name' => 'max be longer than 5' }
 => {"name"=>"is required", "role.name"=>"max be longer than 5"}
-irb(main):008:0> HashNestizy.to_nested(errors)
+>>> HashNestizy.to_nested(errors)
 => {"name"=>"is required", "role"=>{"name"=>"max be longer than 5"}}
 ```
 
@@ -23,6 +23,17 @@ There's also a handy method to patch it to the `Hash` class.
 => {"name"=>"is required", "role"=>{"name"=>"max be longer than 5"}}
 ```
 
+You can use it to render `ActiveModel::Error` instances on rails APIs as follow:
+
+```ruby
+class ApiController < ApplicationController
+  rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
+
+  def record_invalid(err)
+    render json: HashNestizy.to_nested(error.to_h), status: :bad_request
+  end
+end
+```
 ## License
 
 [MIT](./LICENSE)
