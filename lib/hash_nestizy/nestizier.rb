@@ -10,15 +10,18 @@ module HashNestizy
 
     def to_nested
       @hash_value.each_with_object({}) do |(key, value), ac|
-        key_parts = key.split(@nesting_value)
-
         current = ac
         current_parent = ac
         last_key = key
 
-        key_parts.each do |key_part|
-          current_parent = current
-          current, last_key = nested_insert(current, key_part)
+        if [String, Symbol].any? { |t| key.is_a?(t) }
+          key_parts = key.to_s.split(@nesting_value)
+          key_parts.each do |key_part|
+            break unless current.is_a?(Hash)
+
+            current_parent = current
+            current, last_key = nested_insert(current, key_part)
+          end
         end
 
         current_parent[last_key] = value

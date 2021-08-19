@@ -8,6 +8,14 @@ RSpec.describe HashNestizy do
     HashNestizy.to_nested(value)
   end
 
+  shared_examples 'whats expected' do
+    let(:received_hash) { to_nested(initial_hash) }
+
+    it 'returns what\'s expected' do
+      expect(received_hash).to eq(expected_hash)
+    end
+  end
+
   describe 'single entry nested' do
     let(:initial_hash) do
       {
@@ -23,11 +31,7 @@ RSpec.describe HashNestizy do
       }
     end
 
-    let(:received_hash) { to_nested(initial_hash) }
-
-    it 'returns what\'s expected' do
-      expect(received_hash).to eq(expected_hash)
-    end
+    it_behaves_like 'whats expected'
   end
 
   describe 'multiple entry nested' do
@@ -49,11 +53,8 @@ RSpec.describe HashNestizy do
         ]
       }
     end
-    let(:received_hash) { to_nested(initial_hash) }
 
-    it 'returns what\'s expected' do
-      expect(received_hash).to eq(expected_hash)
-    end
+    it_behaves_like 'whats expected'
   end
 
   describe 'many nested levels' do
@@ -71,6 +72,41 @@ RSpec.describe HashNestizy do
 
     it 'deep nested key is as expected' do
       expect(expected_hash.dig(*nested_levels)[0]['says']).to eq 1
+    end
+  end
+
+  describe 'does not break with non string keys' do
+    let(:initial_hash) do
+      {
+        1 => 'is required',
+        :user => 'Mariscala',
+        'role.name' => 'alredy exists',
+        [1, 2, 3] => ''
+      }
+    end
+    let(:expected_hash) do
+      {
+        1 => 'is required',
+        'user' => 'Mariscala',
+        'role' => { 'name' => 'alredy exists' },
+        [1, 2, 3] => ''
+      }
+    end
+
+    it_behaves_like 'whats expected'
+  end
+
+  describe 'does not break with key conflicts' do
+    let(:initial_hash) do
+      {
+        'role' => 'is required',
+        'role.name' => 'is required'
+      }
+    end
+    let(:received_hash) { to_nested(initial_hash) }
+
+    it 'includes a role key' do
+      expect(received_hash).to include('role')
     end
   end
 
