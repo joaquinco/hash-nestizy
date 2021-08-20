@@ -29,10 +29,11 @@ You can use it to render `ActiveModel::Error` instances on rails APIs as follow:
 class ApiController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
 
-  def record_invalid(error)
-    render json: HashNestizy.to_nested(error.to_h), status: :bad_request
+  def record_invalid(ex)
+    render json: HashNestizy.to_nested(ex.record.errors.to_hash), status: :bad_request
   end
 end
+
 ```
 ## License
 
