@@ -24,8 +24,8 @@ module HashNestizy # :nodoc:
   #    'role' => { 'name' => 'max be longer than 5', 'index' => 'alredy exists' },
   #  }
   #
-  def self.to_nested(hash_value, nesting_value: '.')
-    nestizier = Nestizier.new(hash_value, nesting_value)
+  def self.to_nested(hash_value, nesting_value: '.', conflict_override: false)
+    nestizier = Nestizier.new(hash_value, nesting_value, conflict_override: conflict_override)
 
     nestizier.to_nested
   end
