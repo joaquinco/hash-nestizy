@@ -1,7 +1,7 @@
 Hash Nestizy
 ============
 
-Convert a flat hash representation to a nested one. Specifically useful to return easlily to handle rails `ActiveModel::Error` in API mode.
+Convert a flat hash representation to a nested one. Specifically useful to return easily to handle rails `ActiveModel::Error` in API mode.
 
 ## Examples
 
@@ -34,7 +34,34 @@ class ApiController < ApplicationController
   end
 end
 
+### Beware of key collisions
+
+Unexpected behaviour might occur on key conflicts. There's no reasonable way
+to handle this on a case that fits all use cases.
+
+```ruby
+>>> data = {'role' => 'admin', 'role.name' => 'Administrator'}
+=> {"role"=>"admin", "role.name"=>"Administrator"}
+>>> HashNestizy.to_nested(data)
+=> {"role"=>"admin"}
 ```
+
+You can specify an iterator of `[key, value]` pairs and use the `conflict_override: bool` parameter
+to handle key conflicts correctly:
+
+```ruby
+>>> data = [['role', 'admin'], ['role.name', 'Administrator']]
+=> [["role", "admin"], ["role.name", "Administrator"]]
+>>> HashNestizy.to_nested(data, conflict_override: true)
+=> {"role"=>{"name": "Administrator"}}
+
+```
+
+## Changelog
+
+- 0.0.3: Initial release
+- 0.1.0: Handle conflicts correctly.
+
 ## License
 
 [MIT](./LICENSE)

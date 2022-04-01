@@ -4,8 +4,8 @@ require 'hash_nestizy'
 require 'byebug'
 
 RSpec.describe HashNestizy do
-  def to_nested(value)
-    HashNestizy.to_nested(value)
+  def to_nested(*args, **kwargs)
+    HashNestizy.to_nested(*args, **kwargs)
   end
 
   shared_examples 'whats expected' do
@@ -96,17 +96,45 @@ RSpec.describe HashNestizy do
     it_behaves_like 'whats expected'
   end
 
-  describe 'does not break with key conflicts' do
+  describe 'works for key, value array' do
     let(:initial_hash) do
-      {
-        'role' => 'is required',
-        'role.name' => 'is required'
-      }
+      [
+        ['role.name', 'is required'],
+        %w[user Mariscala]
+      ]
     end
-    let(:received_hash) { to_nested(initial_hash) }
 
-    it 'includes a role key' do
-      expect(received_hash).to include('role')
+    let(:expected_hash) do
+      { 'role' => { 'name' => 'is required' }, 'user' => 'Mariscala' }
+    end
+
+    it_behaves_like 'whats expected'
+  end
+
+  describe 'conflict handling' do
+    let(:initial_hash) do
+      [
+        ['role', 'is required'],
+        ['role.name', 'Admin']
+      ]
+    end
+
+    describe 'overriding keys' do
+      let(:received_hash) { to_nested(initial_hash, conflict_override: true) }
+      let(:expected_hash) { { 'role' => { 'name' => 'Admin' } } }
+
+      it 'is correct' do
+        expect(received_hash).to eq(expected_hash)
+      end
+    end
+
+    describe 'not overriding keys' do
+      let(:received_hash) { to_nested(initial_hash) }
+      let(:expected_hash) { { 'role' => 'is required' } }
+
+      it 'is correct' do
+        expect(received_hash).to eq(expected_hash)
+      end
     end
   end
 
