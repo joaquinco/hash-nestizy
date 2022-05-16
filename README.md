@@ -33,6 +33,7 @@ class ApiController < ApplicationController
     render json: HashNestizy.to_nested(ex.record.errors.to_hash), status: :bad_request
   end
 end
+```
 
 ### Beware of key collisions
 
