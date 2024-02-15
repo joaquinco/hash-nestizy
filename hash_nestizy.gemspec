@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
   s.name        = 'hash_nestizy'
-  s.version     = '0.1.0'
-  s.summary     = 'Convert a single level hash into multilevel by splitting keys on some character'
+  s.version     = '0.1.1'
+  s.summary     = 'Nest Hash String keys by splitting them on some character'
   s.authors     = ['Joaquin Correa']
-  s.email       = 'joaquin.correa@xmartlabs.com'
+  s.email       = 'joaquincorrea333@gmail.com'
   s.files       = [
     'lib/hash_nestizy.rb',
     'lib/hash_nestizy/hash_extensions.rb',
