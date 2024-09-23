@@ -1,8 +1,18 @@
 name: ruby-ci
-on:
-  push:
-    branch: main
+on: push
 jobs:
+  rubocop:
+    runs-on: ubuntu-lastest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
+      - name: setup
+        run: bundle install
+      - name: rubocop
+        run: bundle exec rubocop
   test:
     runs-on: ubuntu-lastest
     strategy:
@@ -17,5 +27,7 @@ jobs:
           bundler-cache: true
       - name: setup
         run: bundle install
+      - name:
+        run: bundle exec rubocop
       - name: test
         run: bundle exec rspec --format d
