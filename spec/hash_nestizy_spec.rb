@@ -4,12 +4,8 @@ require 'hash_nestizy'
 require 'byebug'
 
 RSpec.describe HashNestizy do
-  def to_nested(*args, **kwargs)
-    HashNestizy.to_nested(*args, **kwargs)
-  end
-
   shared_examples 'whats expected' do
-    let(:received_hash) { to_nested(initial_hash) }
+    let(:received_hash) { described_class.to_nested(initial_hash) }
 
     it 'returns what\'s expected' do
       expect(received_hash).to eq(expected_hash)
@@ -122,7 +118,7 @@ RSpec.describe HashNestizy do
     end
 
     describe 'overriding keys' do
-      let(:received_hash) { to_nested(initial_hash, conflict_override: true) }
+      let(:received_hash) { described_class.to_nested(initial_hash, override: true) }
       let(:expected_hash) { { 'role' => { 'name' => 'Admin' } } }
 
       it 'is correct' do
@@ -131,12 +127,34 @@ RSpec.describe HashNestizy do
     end
 
     describe 'not overriding keys' do
-      let(:received_hash) { to_nested(initial_hash) }
+      let(:received_hash) { described_class.to_nested(initial_hash) }
       let(:expected_hash) { { 'role' => 'is required' } }
 
       it 'is correct' do
         expect(received_hash).to eq(expected_hash)
       end
+    end
+  end
+
+  describe 'with custom separator' do
+    let(:sep) { /[-_!]/ }
+    let(:initial_hash) do
+      {
+        'hello-world' => [1, 2, 3],
+        'hello.world' => false,
+        'ruby-on_rails[1]' => 'world'
+      }
+    end
+    let(:expected_hash) do
+      {
+        'hello' => { 'world' => [1, 2, 3] },
+        'hello.world' => false,
+        'ruby' => { 'on' => { 'rails' => [nil, 'world'] } }
+      }
+    end
+
+    it 'handles separator correctly' do
+      expect(described_class.to_nested(initial_hash, sep: sep)).to eq(expected_hash)
     end
   end
 

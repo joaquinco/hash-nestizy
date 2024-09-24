@@ -3,14 +3,13 @@
 module HashNestizy
   # Class that performs the actual hash nesting
   class Nestizier
-    def initialize(hash_value, nesting_value, conflict_override: false)
-      @hash_value = hash_value
+    def initialize(nesting_value, override: false)
       @nesting_value = nesting_value
-      @conflict_override = conflict_override
+      @override = override
     end
 
-    def to_nested
-      @hash_value.each_with_object({}) do |(key, value), ac|
+    def to_nested(hash)
+      hash.each_with_object({}) do |(key, value), ac|
         unless [String, Symbol].any? { |t| key.is_a?(t) }
           ac[key] = value
           next
@@ -52,7 +51,7 @@ module HashNestizy
     end
 
     def get_or_add_child(curr_child, key, default: nil)
-      curr_child[key] = default unless curr_child[key] && !@conflict_override
+      curr_child[key] = default unless curr_child[key] && !@override
       curr_child[key]
     end
   end

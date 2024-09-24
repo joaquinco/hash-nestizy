@@ -1,3 +1,5 @@
+[![ruby-ci](https://github.com/joaquinco/hash-nestizy/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/joaquinco/hash-nestizy/actions/workflows/ci.yml)
+
 Hash Nestizy
 ============
 
@@ -5,6 +7,8 @@ Convert a flat hash representation to a nested one. Specifically useful to retur
 
 Splits `Symbol` and `String` keys but converting them to stirng and using
 `String#split` method.
+
+Tested on Ruby 2.5 and newer but probably works on older versions.
 
 ## Examples
 
@@ -50,13 +54,13 @@ to handle this on a case that fits all use cases.
 => {"role"=>"admin"}
 ```
 
-You can specify an iterator of `[key, value]` pairs and use the `conflict_override: bool` parameter
+You can specify an iterator of `[key, value]` pairs and use the `override: bool` parameter
 to handle key conflicts correctly:
 
 ```ruby
 >>> data = [['role', 'admin'], ['role.name', 'Administrator']]
 => [["role", "admin"], ["role.name", "Administrator"]]
->>> HashNestizy.to_nested(data, conflict_override: true)
+>>> HashNestizy.to_nested(data, override: true)
 => {"role"=>{"name": "Administrator"}}
 
 ```
@@ -65,7 +69,7 @@ to handle key conflicts correctly:
 
 - 0.0.3: Initial release.
 - 0.1.0: Handle conflicts correctly.
-- 0.1.2: Cleaner implementaiton.
+- 0.2.0: Cleaner implementaiton.
 
 ## License
 

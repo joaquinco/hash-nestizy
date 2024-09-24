@@ -5,11 +5,11 @@ module HashNestizy
   #
   # Extensions to the Hash class
   module HashExtensions
-    def nestizy(nesting_value = '.', conflict_override: false)
+    def nestizy(sep = '.', override: false)
       HashNestizy.to_nested(
         self,
-        nesting_value: nesting_value,
-        conflict_override: conflict_override
+        sep: sep,
+        override: override
       )
     end
   end

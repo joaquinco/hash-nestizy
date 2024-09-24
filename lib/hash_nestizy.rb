@@ -24,10 +24,10 @@ module HashNestizy # :nodoc:
   #    'role' => { 'name' => 'max be longer than 5', 'index' => 'alredy exists' },
   #  }
   #
-  def self.to_nested(hash_value, nesting_value: '.', conflict_override: false)
-    nestizier = Nestizier.new(hash_value, nesting_value, conflict_override: conflict_override)
+  def self.to_nested(hash, sep: '.', override: false)
+    nestizier = Nestizier.new(sep, override: override)
 
-    nestizier.to_nested
+    nestizier.to_nested(hash)
   end
 
   # = Patch Hash class to add instance method `nestizy`

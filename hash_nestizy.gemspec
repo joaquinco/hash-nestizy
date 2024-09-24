@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'hash_nestizy'
-  s.version     = '0.1.2'
+  s.version     = '0.2.0'
   s.summary     = 'Nest Hash String and Symbol keys by splitting with String#split'
   s.authors     = ['Joaquin Correa']
   s.email       = 'joaquincorrea333@gmail.com'
