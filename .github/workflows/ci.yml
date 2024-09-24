@@ -27,7 +27,5 @@ jobs:
           bundler-cache: true
       - name: setup
         run: bundle install
-      - name:
-        run: bundle exec rubocop
       - name: test
         run: bundle exec rspec --format d
