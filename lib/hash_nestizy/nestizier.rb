@@ -11,28 +11,29 @@ module HashNestizy
 
     def to_nested
       @hash_value.each_with_object({}) do |(key, value), ac|
-        current = ac
-        current_parent = ac
-
         unless [String, Symbol].any? { |t| key.is_a?(t) }
           ac[key] = value
           next
         end
 
         key_parts = key.to_s.split(@nesting_value)
-        key_count = key_parts.length
 
-        key_parts.each_with_index do |key_part, index|
-          break unless current.is_a?(Hash)
-
-          current_parent = current
-          curr_value = index == key_count - 1 ? value : {}
-          current = nested_insert(current, key_part, curr_value)
-        end
+        nest_entry(key_parts, value, ac)
       end
     end
 
     private
+
+    def nest_entry(key_parts, value, container)
+      key_count = key_parts.length
+
+      key_parts.each_with_index do |key_part, index|
+        break unless container.is_a?(Hash)
+
+        curr_value = index == key_count - 1 ? value : {}
+        container = nested_insert(container, key_part, curr_value)
+      end
+    end
 
     def nested_insert(current, key, value)
       if key.include?('[')

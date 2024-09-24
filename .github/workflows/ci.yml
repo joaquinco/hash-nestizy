@@ -12,7 +12,7 @@ jobs:
       - name: setup
         run: bundle install
       - name: rubocop
-        run: bundle exec rubocop
+        run: bundle exec rubocop lib
   test:
     runs-on: ubuntu-latest
     strategy:

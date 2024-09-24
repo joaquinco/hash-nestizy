@@ -3,6 +3,9 @@ Hash Nestizy
 
 Convert a flat hash representation to a nested one. Specifically useful to return easily to handle rails `ActiveModel::Error` in API mode.
 
+Splits `Symbol` and `String` keys but converting them to stirng and using
+`String#split` method.
+
 ## Examples
 
 ```ruby
@@ -60,8 +63,9 @@ to handle key conflicts correctly:
 
 ## Changelog
 
-- 0.0.3: Initial release
+- 0.0.3: Initial release.
 - 0.1.0: Handle conflicts correctly.
+- 0.1.2: Cleaner implementaiton.
 
 ## License
 

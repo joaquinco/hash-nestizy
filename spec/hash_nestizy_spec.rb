@@ -64,7 +64,9 @@ RSpec.describe HashNestizy do
       }
     end
     let(:nested_levels) { %w[no matter walter] }
-    let(:expected_hash) { to_nested(many_nested_level_hash) }
+    let(:expected_hash) do
+      { 'no' => { 'matter' => { 'walter' => [{ 'says' => 1 }] } } }
+    end
 
     it 'key is deeply nested' do
       expect(expected_hash.dig(*nested_levels)).to be_a(Array)
